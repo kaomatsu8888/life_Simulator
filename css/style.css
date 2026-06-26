@@ -1,0 +1,192 @@
+/* style.css — CSS変数でテーマ管理（後でダークモード対応しやすく） */
+
+:root {
+  --bg: #f4f6fb;
+  --panel-bg: #ffffff;
+  --text: #1f2430;
+  --text-muted: #6b7280;
+  --border: #e3e7ef;
+  --primary: #4f8cff;
+  --primary-dark: #3a6fd6;
+  --secondary: #ff7a59;
+  --accent: #34c759;
+  --danger: #e5484d;
+  --shadow: 0 2px 12px rgba(31, 36, 48, 0.06);
+  --radius: 12px;
+  --gap: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ---- ヘッダー ---- */
+.app-header {
+  text-align: center;
+  padding: 24px 16px 12px;
+}
+.app-header h1 { margin: 0; font-size: 1.6rem; }
+.app-header .tagline { margin: 4px 0 0; color: var(--text-muted); font-size: 0.95rem; }
+
+/* ---- レイアウト ---- */
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr 320px;
+  gap: var(--gap);
+  padding: 0 16px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+.panel h2 { margin: 0 0 14px; font-size: 1.15rem; }
+
+/* ---- フォーム ---- */
+.life-form { display: flex; flex-direction: column; gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 3px; }
+.field-label { font-size: 0.82rem; color: var(--text-muted); }
+.life-form input[type="number"],
+.life-form input[type="text"],
+select {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: var(--text);
+}
+.field-row { display: flex; gap: 12px; align-items: flex-end; }
+.field.inline { flex: 1; }
+.checkbox { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+
+.housing-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 4px 0;
+}
+.housing-fieldset legend { padding: 0 6px; }
+.housing-fields { display: flex; flex-direction: column; gap: 8px; }
+.housing-fields.disabled { opacity: 0.4; pointer-events: none; }
+
+/* ---- ボタン ---- */
+.btn-primary, .btn-secondary, .btn-mini {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: filter 0.15s, background 0.15s;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  padding: 11px;
+  font-size: 1rem;
+  margin-top: 6px;
+}
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary {
+  background: var(--secondary);
+  color: #fff;
+  padding: 8px 14px;
+}
+.btn-secondary:hover { filter: brightness(0.95); }
+.btn-mini {
+  background: #eef1f8;
+  color: var(--text);
+  padding: 6px 10px;
+  font-size: 0.82rem;
+}
+.btn-mini.active { background: var(--accent); color: #fff; }
+.btn-mini.danger { color: var(--danger); }
+.btn-mini:hover { filter: brightness(0.97); }
+
+/* ---- イベント追加 ---- */
+.event-adder { margin-top: 18px; border-top: 1px dashed var(--border); padding-top: 14px; }
+.event-adder h3 { margin: 0 0 8px; font-size: 0.95rem; }
+.event-adder-controls { display: flex; gap: 6px; }
+.event-adder-controls select { flex: 1; }
+.event-adder-controls input { width: 70px; }
+.event-params { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.event-param { display: flex; flex-direction: column; gap: 2px; font-size: 0.8rem; color: var(--text-muted); }
+.event-param input { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; }
+
+.event-list { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 6px; }
+.event-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #f7f9fd; border-radius: 8px; padding: 6px 10px; font-size: 0.88rem;
+}
+.event-item .event-del { border: none; background: transparent; color: var(--danger); cursor: pointer; font-size: 0.9rem; }
+.event-list .empty { color: var(--text-muted); font-size: 0.85rem; }
+
+/* ---- 結果パネル ---- */
+.result-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.scenario-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab {
+  border: 1px solid var(--border); background: #fff; border-radius: 20px;
+  padding: 4px 14px; font-size: 0.85rem; cursor: pointer;
+}
+.tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.scenario-actions { display: flex; gap: 6px; margin: 10px 0; flex-wrap: wrap; }
+
+.chart-wrap { position: relative; height: 320px; margin: 12px 0; }
+
+/* ---- サマリーカード ---- */
+.summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.summary-card { background: #f7f9fd; border-radius: 10px; padding: 12px; text-align: center; }
+.summary-title { font-size: 0.78rem; color: var(--text-muted); }
+.summary-value { font-size: 1.15rem; font-weight: 700; margin-top: 4px; }
+
+/* ---- 比較表示 ---- */
+.compare-grid { margin-top: 16px; }
+.compare-grid h3 { font-size: 0.95rem; margin: 0 0 8px; }
+.compare-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.compare-card {
+  flex: 1; min-width: 120px; background: #f7f9fd; border-radius: 10px;
+  padding: 12px; text-align: center; border: 1px solid var(--border);
+}
+.compare-name { font-size: 0.82rem; color: var(--text-muted); }
+.compare-value { font-size: 1.3rem; font-weight: 700; }
+.compare-value span { font-size: 0.7rem; font-weight: 400; margin-left: 2px; }
+.compare-stars { color: #f5b301; font-size: 0.9rem; }
+
+/* ---- AIアドバイザー ---- */
+.advice-box { font-size: 0.9rem; }
+.advice-summary {
+  background: #eef4ff; border-left: 3px solid var(--primary);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;
+}
+.advice-section h4 { margin: 8px 0 4px; font-size: 0.85rem; }
+.advice-section ul { margin: 0; padding-left: 18px; }
+.advice-section li { font-size: 0.85rem; margin-bottom: 4px; }
+
+/* ---- 会話パネル ---- */
+.dialog { margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px; }
+.dialog-log {
+  height: 220px; overflow-y: auto; display: flex; flex-direction: column;
+  gap: 8px; padding: 4px; margin-bottom: 10px;
+}
+.bubble {
+  max-width: 85%; padding: 8px 11px; border-radius: 12px; font-size: 0.85rem;
+  white-space: pre-wrap; word-break: break-word;
+}
+.bubble-ai { background: #f0f2f7; align-self: flex-start; border-bottom-left-radius: 3px; }
+.bubble-user { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+.dialog-form { display: flex; gap: 6px; }
+.dialog-form input { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; }

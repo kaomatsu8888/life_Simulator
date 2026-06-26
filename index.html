@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ライフプランシミュレーター</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>🧭 ライフプランシミュレーター</h1>
+    <p class="tagline">未来を試して、比べて、遊ぶ。</p>
+  </header>
+
+  <main class="layout">
+    <!-- 左：入力フォーム -->
+    <section class="panel panel-form" id="form-panel">
+      <h2>現在の状況</h2>
+      <div id="form-root"></div>
+    </section>
+
+    <!-- 中央：グラフ＋サマリー -->
+    <section class="panel panel-result">
+      <div class="result-toolbar">
+        <h2>資産推移</h2>
+        <div id="scenario-tabs" class="scenario-tabs"></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="assets-chart"></canvas>
+      </div>
+      <div id="summary-root" class="summary-grid"></div>
+      <div id="compare-root" class="compare-grid"></div>
+    </section>
+
+    <!-- 右：AIアドバイザー -->
+    <section class="panel panel-ai">
+      <h2>🤖 AIアドバイザー</h2>
+      <div id="advice-root" class="advice-box"></div>
+      <div id="dialog-root"></div>
+    </section>
+  </main>
+
+  <!-- 外部ライブラリ（CDN） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+
+  <!-- アプリ本体 -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
