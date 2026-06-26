@@ -30,6 +30,7 @@ const dom = {
 };
 
 let formApi = null;
+let _lastRuns = []; // 直近のシナリオ実行結果（init→handleSimulate より前に初期化）
 
 init();
 
@@ -65,7 +66,6 @@ function getActive() {
   return app.scenarios.find(s => s.id === app.activeId) || app.scenarios[0];
 }
 
-let _lastRuns = [];
 function lastResultsForActive() {
   const run = _lastRuns.find(r => r.id === app.activeId);
   return run ? run.results : [];
