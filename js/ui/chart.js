@@ -18,6 +18,16 @@ let chartInstance = null;
 export function renderChart(canvas, runResults) {
   if (!runResults || runResults.length === 0) return;
 
+  // Chart.js（CDN）が読み込めていない場合は分かるように表示する
+  if (typeof Chart === 'undefined') {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#e5484d';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('グラフ描画ライブラリ（Chart.js）を読み込めませんでした。ネット接続を確認してください。', 10, 30);
+    return;
+  }
+
   // X軸（年齢）は最初のシナリオを基準にする
   const labels = runResults[0].results.map(r => `${r.age}歳`);
 
