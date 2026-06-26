@@ -115,17 +115,24 @@ GitHub Pages にそのままデプロイ可能です（リポジトリの Settin
 
 ```js
 [
-  { age: 36, assets: 800, debt: 0, expenses: 280, income: 234, events: [] },
-  { age: 37, assets: 812.4, debt: 0, expenses: 280, income: 234, events: [] },
+  { age: 36, assets: 800, cash: 740, invested: 60, debt: 0, expenses: 280, income: 240, events: [] },
+  { age: 37, assets: 826.2, cash: 762, invested: 64.2, debt: 0, expenses: 280, income: 243.6, events: [] },
   // ...
-  { age: 60, assets: 4200, debt: 0, expenses: 270, income: 0, events: ['🌴 退職'] }
+  { age: 60, assets: 4200, cash: 1200, invested: 3000, debt: 0, expenses: 270, income: 0, events: ['🌴 退職'] }
 ]
 ```
 
 - すべて**万円**単位。
-- `income` は手取り（年収 × 0.78 のざっくり換算）。
-- `assets` は投資の複利・収支を反映した年末資産。
+- `income` は手取り（**年収帯別の率**で換算。`TAKE_HOME_TABLE` 参照）。
+- `assets` は総資産（`cash` ＋ `invested`）。
+- `cash` は現金残高、`invested` は投資残高。**投資リターンは `invested` にのみ適用**され、現金には付かない。
 - `debt` は住宅ローン残高。
+
+### 計算モデルの主な前提
+
+- **手取り**：年収帯別の手取り率（300万以下=80% 〜 1000万超=68%）で累進を近似。
+- **昇給**：在職中は毎年 `RAISE_RATE`（既定1.5%）で年収が上昇。`input.raiseRate` で上書き可。
+- **投資**：毎月の積立は現金から投資へ移し、投資残高にのみ年率リターンを複利適用。
 
 `assessRisk(results)` で60歳時点の老後リスクを `★1〜5`（安全度）として取得できます。
 

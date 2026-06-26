@@ -4,14 +4,24 @@
 
 import { applyEvents, summarizeEventsAtAge } from './events.js';
 
-// ---- 定数（最初は素朴な定義で開始） ----
+// ---- 定数 ----
 
 export const CONSTANTS = {
-  TAKE_HOME_RATE: 0.78,   // 年収 → 手取り係数
-  RETIRE_AGE: 60,         // シミュレーション終端
+  RETIRE_AGE: 60,          // シミュレーション終端
   BASE_LIVING_SINGLE: 180, // 単身の年間生活費（万円）
   PARTNER_LIVING_ADD: 90,  // パートナー分の追加生活費（万円/年）
+  RAISE_RATE: 0.015,       // 定期昇給の年率（在職中・既定1.5%）
 };
+
+// 年収帯別の手取り率テーブル（税・社会保険料の累進をざっくり近似）。
+// 年収が上がるほど手取り率は下がる。境界は「以下」で判定。
+export const TAKE_HOME_TABLE = [
+  { upTo: 300, rate: 0.80 },
+  { upTo: 500, rate: 0.78 },
+  { upTo: 700, rate: 0.76 },
+  { upTo: 1000, rate: 0.73 },
+  { upTo: Infinity, rate: 0.68 },
+];
 
 // 子ども1人あたりの年間教育費テーブル（子の年齢段階別・万円/年）
 export const EDUCATION_TABLE = [
@@ -24,12 +34,22 @@ export const EDUCATION_TABLE = [
 ];
 
 /**
- * 年収から手取りを概算する（ざっくり係数掛け）。
+ * 年収帯に応じた手取り率を返す（累進の近似）。
+ * @param {number} income 年収（万円）
+ * @returns {number} 手取り率（0〜1）
+ */
+export function takeHomeRate(income) {
+  const row = TAKE_HOME_TABLE.find(r => income <= r.upTo);
+  return row ? row.rate : 0.68;
+}
+
+/**
+ * 年収から手取りを概算する（年収帯別の率を適用）。
  * @param {number} income 年収（万円）
  * @returns {number} 手取り（万円）
  */
 export function takeHome(income) {
-  return income * CONSTANTS.TAKE_HOME_RATE;
+  return income * takeHomeRate(income);
 }
 
 /**
@@ -104,7 +124,10 @@ export function simulate(input, events = []) {
     childrenAges: buildInitialChildren(input.children || 0, startAge),
   };
 
-  let assets = input.savings || 0;
+  // 資産は「現金(cash)」と「投資残高(invested)」に分けて管理する。
+  // 投資リターンは invested にのみ適用する（現金には付かない）。
+  let cash = input.savings || 0;
+  let invested = 0;
   let debt = 0;
 
   // 住宅ローン年額（購入後に発生）
@@ -119,11 +142,12 @@ export function simulate(input, events = []) {
     const yearEvents = allEvents.filter(e => e.age === age);
 
     // --- イベント適用（状態・資産・ローンを書き換える） ---
-    const applied = applyEvents({ state, assets, debt, activeLoan }, yearEvents, {
+    // イベントの入出金は現金(cash)に対して行う。
+    const applied = applyEvents({ state, assets: cash, debt, activeLoan }, yearEvents, {
       annualLoanPayment,
     });
     state = applied.state;
-    assets = applied.assets;
+    cash = applied.assets;
     debt = applied.debt;
     activeLoan = applied.activeLoan;
 
@@ -137,12 +161,13 @@ export function simulate(input, events = []) {
     const loanPay = activeLoan ? activeLoan.annualPayment : 0;
     const expenses = living + education + loanPay;
 
-    // --- 投資の複利（年初の資産に対して年率を適用） ---
+    // --- 投資の複利（投資残高にのみ年率を適用） ---
     const investContribution = state.monthlyInvest * 12;
-    const investGrowth = assets * state.investReturn;
+    const investGrowth = invested * state.investReturn;
+    invested = invested + investGrowth + investContribution;
 
-    // --- 年次キャッシュフロー ---
-    assets = assets + investGrowth + netIncome + investContribution - expenses;
+    // --- 現金の収支（積立分は現金から投資へ移すため差し引く） ---
+    cash = cash + netIncome - expenses - investContribution;
 
     // --- ローン残高の減少 ---
     if (activeLoan) {
@@ -158,14 +183,25 @@ export function simulate(input, events = []) {
       }
     }
 
+    // 総資産は現金＋投資残高。内訳も出力して透明性を保つ。
+    const assets = cash + invested;
+
     results.push({
       age,
       assets: round1(assets),
+      cash: round1(cash),
+      invested: round1(invested),
       debt: round1(debt),
       expenses: round1(expenses),
       income: round1(netIncome),
       events: summarizeEventsAtAge(yearEvents),
     });
+
+    // --- 定期昇給（在職中のみ。翌年の年収に反映） ---
+    if (!state.retired) {
+      const raise = input.raiseRate ?? CONSTANTS.RAISE_RATE;
+      state.income = state.income * (1 + raise);
+    }
 
     // --- 年齢を1つ進める（子どもも歳をとる） ---
     state.childrenAges = state.childrenAges.map(a => a + 1);
