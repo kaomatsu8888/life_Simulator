@@ -75,18 +75,18 @@ GitHub Pages にそのままデプロイ可能です（リポジトリの Settin
 
 ```js
 {
-  age: 36,               // 現在の年齢
-  income: 300,           // 年収（万円）
-  savings: 800,          // 貯金（万円）
-  monthlyInvest: 5,      // 毎月の積立額（万円）
-  investReturn: 0.03,    // 想定利回り（年率）
-  partner: true,         // パートナーの有無
-  children: 2,           // 子どもの人数
+  age: 26,               // 現在の年齢
+  income: 350,           // 年収（万円）
+  savings: 150,          // 貯金（万円）
+  monthlyInvest: 3,      // 毎月の積立額（万円）
+  investReturn: 0.04,    // 想定利回り（年率）
+  partner: false,        // パートナーの有無
+  children: 0,           // 子どもの人数
   housing: {             // 住宅購入プラン（任意）
     plan: true,
-    age: 38,             // 購入年齢
-    price: 4000,         // 物件価格（万円）
-    downPayment: 500,    // 頭金（万円）
+    age: 32,             // 購入年齢
+    price: 3500,         // 物件価格（万円）
+    downPayment: 300,    // 頭金（万円）
     loanYears: 35,       // 返済年数
     rate: 0.015          // 金利（年率）
   }

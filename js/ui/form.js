@@ -3,15 +3,16 @@
 
 import { EVENT_TYPES } from '../core/events.js';
 
+// デフォルトは20代の社会人モデルケース（これから人生を試す想定）
 const DEFAULT_INPUT = {
-  age: 36,
-  income: 300,
-  savings: 800,
-  monthlyInvest: 5,
-  investReturn: 0.03,
-  partner: true,
-  children: 2,
-  housing: { plan: false, age: 38, price: 4000, downPayment: 500, loanYears: 35, rate: 0.015 },
+  age: 26,
+  income: 350,
+  savings: 150,
+  monthlyInvest: 3,
+  investReturn: 0.04,
+  partner: false,
+  children: 0,
+  housing: { plan: false, age: 32, price: 3500, downPayment: 300, loanYears: 35, rate: 0.015 },
 };
 
 /**
